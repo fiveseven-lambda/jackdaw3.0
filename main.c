@@ -161,7 +161,7 @@ int main(int argc, char *argv[]){
 	for(int i = 0; i < samplerate * length; ++i){
 		for(int j = 0; j < channel; ++j){
 			int tmp = sin(2 * M_PI * 440 * i / samplerate) * (1 << bitdepth - 1);
-			if(bitdepth == 8) ((char *)map)[i * channel + j] = tmp;
+			if(bitdepth == 8) ((unsigned char *)map)[i * channel + j] = tmp - (1 << 7);
 			else if(bitdepth == 16) ((short *)map)[i * channel + j] = tmp;
 			else if(bitdepth == 32) ((int *)map)[i * channel + j] = tmp;
 			else error(INVALID_BITDEPTH, bitdepth);
