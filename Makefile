@@ -1,2 +1,2 @@
 jackdaw: main.c
-	gcc main.c -lm -Wall -Wno-parentheses
+	gcc main.c errorlist.c load.c -lm -Wall -Wno-parentheses
