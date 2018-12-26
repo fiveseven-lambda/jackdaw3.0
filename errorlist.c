@@ -40,6 +40,9 @@ int error(enum ERROR err, ...){
 				fprintf(stderr, "failed to unmap %d bytes of output file \"%s\" (%s)\n", a, b, strerror(errno));
 				exit(EXIT_FAILURE);
 			}
+		case NO_INPUT_FILE:
+			fprintf(stderr, "no input file\n");
+			exit(EXIT_FAILURE);
 		case FOPEN_FAILED_ARG:
 			fprintf(stderr, "failed to open input file \"%s\" (%s)\n", va_arg(ap, char *), strerror(errno));
 			return 2;
@@ -119,6 +122,7 @@ int error(enum ERROR err, ...){
 			fprintf(stderr, "too long macro \"%s...\"\n", va_arg(ap, char *));
 			return 2;
 		case UNDEFINED_MACRO:
+		case UNDEFINED_MACRO_UNDEFINE:
 			fprintf(stderr, "undefined macro \"%s\"\n", va_arg(ap, char *));
 			return 2;
 		case INVALID_BITDEPTH:

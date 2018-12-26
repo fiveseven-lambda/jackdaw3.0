@@ -1,2 +1,2 @@
-jackdaw: main.c
-	gcc main.c errorlist.c load.c -lm -Wall -Wno-parentheses
+jackdaw: main.c errorlist.h errorlist.c load.h load.c
+	gcc main.c errorlist.c load.c -ojackdaw -lm -Wall -Wno-parentheses

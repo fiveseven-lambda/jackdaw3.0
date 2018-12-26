@@ -11,7 +11,7 @@
 
 int samplerate = 44100;
 short bitdepth = 16, channel = 2;
-double length = 3.0;
+double length = 30.0;
 
 _Bool successful = 1;
 
@@ -41,11 +41,12 @@ int main(int argc, char *argv[]){
 				break;
 			case 'h':
 			default:
-				printf("usage: %s [-v --version] [--verbose] [-o --out <file>] [-h --help]\n", argv[0]);
+				printf("usage: %s <file> [-v --version] [--verbose] [-o --out <file>] [-h --help]\n", argv[0]);
 				return 0;
 		}
 	}
 
+	if(optind >= argc) error(NO_INPUT_FILE);
 	for(; optind < argc; ++optind){
 		FILE *fp = fopen(argv[optind], "r");
 		if(fp == NULL) error(FOPEN_FAILED_ARG, argv[optind]);
@@ -82,17 +83,9 @@ int main(int argc, char *argv[]){
 	memcpy((char *)map + 36, "data", 4);
 	((unsigned int *)map)[10] = filesize - 44;
 
-	map += 44;
-	for(int i = 0; i < samplerate * length; ++i){
-		for(int j = 0; j < channel; ++j){
-			int tmp = sin(2 * M_PI * 440 * i / samplerate) * (1 << bitdepth - 1);
-			if(bitdepth == 8) ((unsigned char *)map)[i * channel + j] = tmp - (1 << 7);
-			else if(bitdepth == 16) ((short *)map)[i * channel + j] = tmp;
-			else if(bitdepth == 32) ((int *)map)[i * channel + j] = tmp;
-			else error(INVALID_BITDEPTH, bitdepth);
-		}
-	}
-	map -= 44;
+	if(bitdepth == 8) write8bit(map + 44);
+	if(bitdepth == 16) write16bit(map + 44);
+	if(bitdepth == 32) write32bit(map + 44);
 
 	if(close(out) == -1) error(CLOSE_FAILED, out_filename);
 	if(munmap(map, filesize) == -1) error(MUNMAP_FAILED, out_filename, filesize);
